@@ -1,0 +1,90 @@
+<% content_for :title, "Speaking — Meen" %>
+
+<% exchange_count = @history.count { |m| m["role"] == "user" } %>
+
+<div class="container py-5" style="max-width:650px;">
+
+  <div class="mb-4">
+    <%= render "sessions/progress", step: 3 %>
+  </div>
+
+  <div class="d-flex align-items-center gap-3 mb-3">
+    <div style="font-size:2.2rem; line-height:1;">🦊</div>
+    <div>
+      <h1 class="h5 fw-bold mb-0">Conversation with Greta</h1>
+      <p class="text-muted mb-0" style="font-size:var(--fs-small);">Use your known German words. Type or speak — Greta will guide you.</p>
+    </div>
+  </div>
+
+  <div data-controller="conversation"
+       data-conversation-exchange-url-value="<%= speaking_exchange_session_path %>"
+       data-conversation-exchange-count-value="<%= exchange_count %>">
+
+    <%# Chat history %>
+    <div data-conversation-target="messages"
+         class="d-flex flex-column mb-3 p-3"
+         style="min-height:280px; max-height:420px; overflow-y:auto;
+                background:var(--meen-white); border-radius:var(--radius-lg);
+                border:1px solid var(--meen-border);">
+      <% @history.each do |msg| %>
+        <%= render "sessions/chat_message", role: msg["role"], content: msg["content"] %>
+      <% end %>
+    </div>
+
+    <%# Input area %>
+    <%= form_with url: "#", data: { action: "submit->conversation#send" } do |f| %>
+      <div class="d-flex gap-2 mb-2">
+        <%= f.text_area :message,
+              data: { conversation_target: "input" },
+              rows: 2,
+              placeholder: "Schreib auf Deutsch… (or use the mic)",
+              class: "form-control",
+              autofocus: true %>
+        <%= f.button type: "submit",
+              data: { conversation_target: "sendBtn" },
+              class: "btn fw-semibold px-4 flex-shrink-0",
+              style: "background:var(--meen-lavender); color:var(--meen-bg); border-radius:var(--radius-md); white-space:nowrap;" do %>
+          Send →
+        <% end %>
+      </div>
+    <% end %>
+
+    <%# Controls row %>
+    <div class="d-flex align-items-center gap-2 mb-4">
+      <button data-conversation-target="micBtn"
+              data-action="click->conversation#toggleMic"
+              class="btn btn-sm fw-semibold"
+              style="background:var(--meen-haze); color:var(--meen-ink); border-radius:var(--radius-md);"
+              title="Speak in German">
+        🎤
+      </button>
+      <button data-conversation-target="outputBtn"
+              data-action="click->conversation#toggleOutput"
+              class="btn btn-sm fw-semibold"
+              style="background:var(--meen-haze); color:var(--meen-ink); border-radius:var(--radius-md);"
+              title="Toggle Greta's voice">
+        🔇 Off
+      </button>
+      <span class="text-muted" style="font-size:var(--fs-small);">
+        <%= exchange_count %> / 5 exchanges
+      </span>
+    </div>
+
+    <%# Done / hint %>
+    <div class="text-center">
+      <%= form_with url: speaking_complete_session_path, method: :post do |f| %>
+        <%= f.button "Done chatting →",
+              data: { conversation_target: "doneBtn" },
+              class: "btn fw-semibold px-5 py-2 #{'d-none' if exchange_count < 5}",
+              style: "background:var(--meen-teal); color:var(--meen-bg); border-radius:var(--radius-pill);" %>
+      <% end %>
+      <p data-conversation-target="doneHint"
+         class="text-muted mb-0 <%= 'd-none' if exchange_count >= 5 %>"
+         style="font-size:var(--fs-small);">
+        Have at least 5 exchanges with Greta before continuing.
+      </p>
+    </div>
+
+  </div>
+
+</div>

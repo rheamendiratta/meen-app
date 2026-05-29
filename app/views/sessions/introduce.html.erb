@@ -1,0 +1,80 @@
+<% content_for :title, "Today's Words — Meen" %>
+
+<div class="container py-5" style="max-width:700px;">
+
+  <div class="mb-4">
+    <%= render "sessions/progress", step: 1 %>
+  </div>
+
+  <h1 class="h4 fw-bold mb-1">Today's 5 new words</h1>
+  <p class="text-muted mb-4" style="font-size:var(--fs-small);">Read each card, then start practising.</p>
+
+  <div class="d-flex flex-column gap-3 mb-5">
+    <% @words.each do |word| %>
+      <% translation = @translations[word.id] %>
+      <% primary_form = word.word_forms.find(&:is_primary) || word.word_forms.first %>
+
+      <div class="card border-0 p-4"
+           style="border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+
+        <div class="d-flex align-items-start justify-content-between gap-3">
+
+          <%# Left: word, pronunciation button, translation %>
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+              <span class="fw-bold" style="font-size:var(--fs-h3); color:var(--meen-ink);">
+                <%= [word.article, word.lemma].compact.join(" ") %>
+              </span>
+              <span data-controller="speech"
+                    data-speech-text-value="<%= [word.article, word.lemma].compact.join(' ') %>">
+                <button data-action="click->speech#speak"
+                        data-speech-target="button"
+                        class="btn btn-sm p-1"
+                        style="background:var(--meen-haze); border-radius:var(--radius-sm);
+                               font-size:1rem; line-height:1; border:none;"
+                        title="Hear pronunciation">🔊</button>
+              </span>
+            </div>
+
+            <% if translation %>
+              <p class="mb-0" style="color:var(--meen-periwinkle); font-size:var(--fs-body);">
+                <%= translation.meaning %>
+              </p>
+            <% end %>
+
+            <% if primary_form && primary_form.form_text != word.lemma %>
+              <p class="mt-1 mb-0 text-muted" style="font-size:var(--fs-small);">
+                e.g. <em><%= primary_form.form_text %></em>
+                <%= "(#{primary_form.morphology})" if primary_form.morphology.present? %>
+              </p>
+            <% end %>
+          </div>
+
+          <%# Right: part-of-speech and level badges %>
+          <div class="d-flex flex-column align-items-end gap-1 flex-shrink-0">
+            <% if word.part_of_speech.present? %>
+              <span class="badge"
+                    style="background:var(--meen-lavender-light); color:var(--meen-lavender); font-size:0.7rem;">
+                <%= word.part_of_speech %>
+              </span>
+            <% end %>
+            <% if word.level.present? %>
+              <span class="badge"
+                    style="background:var(--meen-teal-light); color:var(--meen-teal); font-size:0.7rem;">
+                <%= word.level %>
+              </span>
+            <% end %>
+          </div>
+
+        </div><%# end justify-content-between %>
+      </div><%# end card %>
+    <% end %>
+  </div>
+
+  <%= form_with url: introduce_session_path, method: :post do |f| %>
+    <%= f.button "Got it — start practising →",
+          class: "btn fw-semibold px-5 py-2 w-100",
+          style: "background:var(--meen-lavender); color:var(--meen-bg); border-radius:var(--radius-pill);" %>
+  <% end %>
+
+</div>

@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-md">
+  <div class="container">
+    <%= link_to root_path, class: "navbar-brand d-flex align-items-center gap-2" do %>
+      <%= image_tag "Meen_logo_2.png", alt: "Meen", height: 36,
+            style: "object-fit:contain;" %>
+      <span style="font-family:var(--font-display); font-weight:600; font-size:1.25rem; color:var(--meen-lavender);">meen</span>
+    <% end %>
+
+    <button class="navbar-toggler border-0" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navMain"
+            style="color:var(--meen-ink-muted);">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav ms-auto align-items-md-center gap-md-2">
+        <% if current_user.active_language.present? %>
+          <li class="nav-item">
+            <span class="nav-link" style="font-size:var(--fs-small); color:var(--meen-ink-muted);">
+              <%= current_user.active_language.name %>
+              &nbsp;·&nbsp;
+              🔥 <%= current_user.current_streak %>
+            </span>
+          </li>
+        <% end %>
+        <li class="nav-item">
+          <%= link_to "Word Bank", vocabulary_index_path,
+                class: "nav-link",
+                style: "font-size:var(--fs-small); color:var(--meen-ink-muted);" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Sign out", destroy_user_session_path,
+                class: "nav-link",
+                style: "font-size:var(--fs-small); color:var(--meen-ink-muted);" %>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

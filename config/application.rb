@@ -44,5 +44,14 @@ module Rails8Template
       g.helper false
       g.system_tests nil
     end
+
+    config.assets.paths << Gem.loaded_specs["bootstrap"].gem_dir + "/assets/stylesheets"
+    config.dartsass.builds = { "application.scss" => "meen.css" }
+    config.dartsass.build_options = [
+      "--quiet-deps",
+      "--silence-deprecation=import",
+      "--style=compressed",
+      "--no-source-map"
+    ]
   end
 end

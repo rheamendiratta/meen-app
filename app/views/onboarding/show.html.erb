@@ -1,0 +1,50 @@
+<% content_for :title, "Choose your language — Meen" %>
+
+<div class="min-vh-100 d-flex align-items-center justify-content-center py-5" style="background:var(--meen-haze);">
+  <div class="text-center w-100" style="max-width:600px; padding: 0 1rem;">
+    <img src="/icon.png" alt="Meen" height="60" class="mb-4" style="border-radius:14px;">
+    <h1 class="fw-bold mb-2" style="color:var(--meen-periwinkle); font-size:var(--fs-h1);">What do you want to learn?</h1>
+    <p class="text-muted mb-5">Pick your first language. You can add more later.</p>
+
+    <%= form_with url: onboarding_path, method: :patch do |f| %>
+      <div class="row g-4 justify-content-center mb-5">
+        <% @learnable_languages.each do |lang| %>
+          <div class="col-10 col-sm-5">
+            <label class="d-block cursor-pointer h-100">
+              <input type="radio" name="language_id" value="<%= lang.id %>" class="d-none" required>
+              <div class="card border-2 h-100 p-4 language-card"
+                   style="border-radius:var(--radius-lg); border-color:var(--meen-mist); cursor:pointer; transition:all .2s;">
+                <div class="mb-2" style="font-size:2.5rem;">
+                  <%= lang.code == "de" ? "🦊" : "🐱" %>
+                </div>
+                <h2 class="h5 fw-bold mb-1" style="color:var(--meen-ink);">
+                  <%= lang.name %>
+                </h2>
+                <p class="text-muted mb-0" style="font-size:var(--fs-small);">
+                  <%= lang.code == "de" ? "with Greta" : "avec Fabien" %>
+                </p>
+              </div>
+            </label>
+          </div>
+        <% end %>
+      </div>
+
+      <button type="submit" class="btn text-white fw-semibold px-5 py-2"
+              style="background:var(--meen-lavender); border-radius:var(--radius-pill); font-size:var(--fs-body);">
+        Start learning →
+      </button>
+    <% end %>
+  </div>
+</div>
+
+<style>
+  input[type=radio]:checked + .language-card {
+    border-color: var(--meen-lavender) !important;
+    background: rgba(156, 135, 177, 0.07);
+    box-shadow: var(--shadow-md);
+  }
+  .language-card:hover {
+    border-color: var(--meen-lavender) !important;
+    box-shadow: var(--shadow-sm);
+  }
+</style>

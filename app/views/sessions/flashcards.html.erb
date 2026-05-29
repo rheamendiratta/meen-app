@@ -1,0 +1,101 @@
+<% content_for :title, "Flashcards — Meen" %>
+
+<div class="container py-5" style="max-width:600px;">
+
+  <div class="mb-4">
+    <%= render "sessions/progress", step: 2 %>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h5 fw-bold mb-0" style="color:var(--meen-ink);">Flashcard practice</h1>
+    <span class="text-muted" style="font-size:var(--fs-small);"><%= @position %> / <%= @total %></span>
+  </div>
+
+  <div class="mb-3">
+    <div class="progress" style="height:6px; border-radius:3px;">
+      <div class="progress-bar" role="progressbar"
+           style="width:<%= (@position.to_f / @total * 100).round %>%; background:var(--meen-lavender);"></div>
+    </div>
+  </div>
+
+  <div data-controller="flashcard" class="mb-4">
+
+    <%# Card container with flip perspective %>
+    <div data-flashcard-target="scene"
+         style="perspective:1000px; min-height:220px; cursor:pointer;"
+         data-action="click->flashcard#flip">
+
+      <div data-flashcard-target="card"
+           style="position:relative; width:100%; min-height:220px;
+                  transition:transform 0.5s; transform-style:preserve-3d;">
+
+        <%# Front — prompt side %>
+        <div data-flashcard-target="front"
+             class="card border-0 p-5 text-center"
+             style="position:absolute; width:100%; backface-visibility:hidden;
+                    border-radius:var(--radius-lg); box-shadow:var(--shadow-md);
+                    background:var(--meen-white);">
+          <p class="text-muted mb-3" style="font-size:var(--fs-small);">
+            <%= @card.recognition? ? "What does this mean?" : "How do you say this in German?" %>
+          </p>
+          <p class="fw-bold mb-0" style="font-size:2rem; color:var(--meen-ink);">
+            <% if @card.recognition? %>
+              <%= [@word.article, @word.lemma].compact.join(" ") %>
+            <% else %>
+              <%= @translation&.meaning %>
+            <% end %>
+          </p>
+          <p class="text-muted mt-4 mb-0" style="font-size:var(--fs-small);">Tap to reveal</p>
+        </div>
+
+        <%# Back — answer side %>
+        <div data-flashcard-target="back"
+             class="card border-0 p-5 text-center"
+             style="position:absolute; width:100%; backface-visibility:hidden;
+                    transform:rotateY(180deg);
+                    border-radius:var(--radius-lg); box-shadow:var(--shadow-md);
+                    background:var(--meen-white);">
+          <p class="text-muted mb-3" style="font-size:var(--fs-small);">Answer</p>
+          <p class="fw-bold mb-1" style="font-size:2rem; color:var(--meen-periwinkle);">
+            <% if @card.recognition? %>
+              <%= @translation&.meaning %>
+            <% else %>
+              <%= [@word.article, @word.lemma].compact.join(" ") %>
+            <% end %>
+          </p>
+          <% if @card.production? %>
+            <% primary_form = @word.word_forms.find(&:is_primary) || @word.word_forms.first %>
+            <% if primary_form && primary_form.form_text != @word.lemma %>
+              <p class="text-muted mt-1 mb-0" style="font-size:var(--fs-small);">
+                e.g. <em><%= primary_form.form_text %></em>
+              </p>
+            <% end %>
+          <% end %>
+        </div>
+
+      </div>
+    </div>
+
+    <%# Rating buttons — hidden until card is flipped %>
+    <div data-flashcard-target="ratings" class="d-none mt-4">
+      <%= form_with url: flashcards_session_path, method: :post do |f| %>
+        <div class="d-flex gap-2 justify-content-center">
+          <%= f.button "Again", name: "rating", value: "again",
+                class: "btn fw-semibold flex-fill",
+                style: "background:#fde8e8; color:#c0392b; border-radius:var(--radius-md);" %>
+          <%= f.button "Hard", name: "rating", value: "hard",
+                class: "btn fw-semibold flex-fill",
+                style: "background:#fff3cd; color:#856404; border-radius:var(--radius-md);" %>
+          <%= f.button "Good", name: "rating", value: "good",
+                class: "btn fw-semibold flex-fill",
+                style: "background:#d1f0e0; color:#155724; border-radius:var(--radius-md);" %>
+          <%= f.button "Easy", name: "rating", value: "easy",
+                class: "btn fw-semibold flex-fill",
+                style: "background:#cce5ff; color:#004085; border-radius:var(--radius-md);" %>
+        </div>
+      <% end %>
+    </div>
+
+  </div>
+
+</div>

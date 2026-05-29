@@ -1,0 +1,227 @@
+@import "meen_variables";
+@import "bootstrap";
+
+:root {
+  // Brand — brighter for dark backgrounds
+  --meen-lavender:   #C4AFDD;
+  --meen-periwinkle: #9BA3DC;
+  --meen-sky:        #90C4DE;
+  --meen-teal:       #7DBDE0;
+  --meen-mist:       #6E6B8E;
+  --meen-haze:       #2E2C4A;
+
+  // Semantic (flipped for dark theme)
+  --meen-bg:         #12111F;   // page background
+  --meen-white:      #1E1C30;   // card / surface background
+  --meen-ink:        #EAE8F5;   // primary text
+
+  // Functional
+  --meen-success: #6BBEA5;
+  --meen-warning: #E8BF78;
+  --meen-danger:  #D98AA5;
+
+  // Derived fills
+  --meen-lavender-light: rgba(196, 175, 221, 0.18);
+  --meen-teal-light:     rgba(125, 189, 224, 0.18);
+  --meen-success-light:  rgba(107, 190, 165, 0.18);
+  --meen-error-light:    rgba(217, 138, 165, 0.22);
+  --meen-border:         #3D3A5C;
+  --meen-ink-muted:      #B8B4D4;
+
+  // Type
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-base:    'Inter', system-ui, sans-serif;
+  --fs-display: 2.75rem;
+  --fs-h1: 2rem;
+  --fs-h2: 1.5rem;
+  --fs-h3: 1.25rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-micro: 0.75rem;
+
+  // Spacing
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+
+  // Radius
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  // Shadows
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+// ── Base ────────────────────────────────────────────────────────────────────
+
+body {
+  background: var(--meen-bg) !important;
+  color: var(--meen-ink);
+  font-family: var(--font-base);
+}
+
+h1, h2, h3, h4, .h1, .h2, .h3, .h4,
+.display-1, .display-2, .display-3 {
+  font-family: var(--font-display);
+}
+
+.text-muted { color: var(--meen-ink-muted) !important; }
+
+// ── Meen card default ───────────────────────────────────────────────────────
+
+.card {
+  background: var(--meen-white);
+  color: var(--meen-ink);
+  border-color: var(--meen-border);
+}
+
+// ── Navbar ──────────────────────────────────────────────────────────────────
+
+.navbar {
+  background: var(--meen-white) !important;
+  border-bottom: 1px solid var(--meen-border);
+}
+
+// ── Buttons (Meen primary style) ────────────────────────────────────────────
+
+.btn-meen {
+  background: var(--meen-lavender);
+  color: var(--meen-bg);
+  border: none;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  transition: background 0.15s, transform 0.1s;
+
+  &:hover {
+    background: var(--meen-periwinkle);
+    color: var(--meen-bg);
+    transform: translateY(-1px);
+  }
+}
+
+.btn-meen-teal {
+  background: var(--meen-teal);
+  color: var(--meen-bg);
+  border: none;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+
+  &:hover { background: var(--meen-sky); color: var(--meen-bg); }
+}
+
+// ── Form inputs ─────────────────────────────────────────────────────────────
+
+.form-control {
+  background: #252340;
+  color: var(--meen-ink);
+  border-color: var(--meen-border);
+
+  &:focus {
+    background: #2E2C4A;
+    color: var(--meen-ink);
+    border-color: var(--meen-lavender);
+    box-shadow: 0 0 0 3px rgba(196, 175, 221, 0.25);
+  }
+
+  &::placeholder { color: var(--meen-mist); }
+}
+
+textarea.form-control { resize: none; }
+
+// ── Radio MCQ labels ─────────────────────────────────────────────────────────
+
+.mcq-option {
+  cursor: pointer;
+  border: 2px solid var(--meen-border);
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s, background 0.15s;
+  color: var(--meen-ink);
+
+  &:hover {
+    border-color: var(--meen-lavender);
+    background: var(--meen-lavender-light);
+  }
+
+  &:has(input:checked) {
+    border-color: var(--meen-lavender);
+    background: var(--meen-lavender-light);
+  }
+}
+
+// ── Chat bubbles ─────────────────────────────────────────────────────────────
+
+.chat-bubble {
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  line-height: 1.6;
+  color: var(--meen-ink);
+
+  p { margin-bottom: 0.3rem; }
+  p:last-child { margin-bottom: 0; }
+}
+
+// Greta: full-width card stretching beside her avatar
+.chat-bubble-greta {
+  flex: 1;
+  background: #252344;
+  border: 1px solid rgba(196, 175, 221, 0.18);
+  box-shadow: var(--shadow-sm);
+}
+
+// German sentence — prominent
+.greta-german {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  color: var(--meen-ink);
+  margin-bottom: 0.15rem !important;
+}
+
+// English translation — italic, muted
+.greta-english {
+  font-size: var(--fs-small);
+  font-style: italic;
+  color: var(--meen-ink-muted);
+  margin-bottom: 0.6rem !important;
+}
+
+// Coaching / instruction text
+.greta-coaching {
+  font-size: var(--fs-body);
+  color: var(--meen-ink);
+}
+
+// User bubble — right-aligned, narrower
+.chat-bubble-user {
+  max-width: 72%;
+  background: #1A3148;
+  border: 1px solid rgba(125, 189, 224, 0.25);
+}
+
+// Greta avatar circle
+.greta-avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #2D5A3D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+// ── Accessibility ────────────────────────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

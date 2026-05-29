@@ -1,0 +1,101 @@
+<% content_for :title, "Word Bank — Meen" %>
+
+<div class="container py-5" style="max-width: 760px;">
+
+  <%# Header %>
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="mb-1" style="font-size: var(--fs-h1);">Word Bank</h1>
+      <p class="text-muted mb-0" style="font-size: var(--fs-small);">
+        <%= @language&.name %> &middot;
+        <%= @user_added.size + @curriculum.size %> words known
+      </p>
+    </div>
+    <%= link_to new_vocabulary_path, class: "btn btn-meen px-4" do %>
+      + Add a word
+    <% end %>
+  </div>
+
+  <%# Your words section (user-added) %>
+  <% if @user_added.any? %>
+    <h2 class="mb-3" style="font-size: var(--fs-h3); color: var(--meen-lavender);">
+      Your words
+      <span class="badge ms-2" style="background: var(--meen-haze); color: var(--meen-lavender); font-size: var(--fs-micro); font-family: var(--font-base); font-weight: 500; vertical-align: middle;">
+        <%= @user_added.size %>
+      </span>
+    </h2>
+
+    <div class="card mb-5" style="border-radius: var(--radius-md); overflow: hidden;">
+      <% @user_added.each_with_index do |vocab, i| %>
+        <% word = vocab.word %>
+        <% translation = word.word_translations.find { |t| t.language_id == current_user.base_language_id } %>
+        <div class="d-flex align-items-center gap-3 px-4 py-3 <%= i < @user_added.size - 1 ? 'border-bottom' : '' %>"
+             style="border-color: var(--meen-border) !important;">
+          <div class="flex-grow-1">
+            <span style="font-family: var(--font-display); font-size: var(--fs-h3); font-weight: 700;">
+              <%= [word.article, word.lemma].compact.join(" ") %>
+            </span>
+            <% if word.part_of_speech.present? %>
+              <span class="badge ms-2" style="background: var(--meen-haze); color: var(--meen-ink-muted); font-size: var(--fs-micro); font-family: var(--font-base); font-weight: 400;">
+                <%= word.part_of_speech %>
+              </span>
+            <% end %>
+            <% if translation&.meaning.present? %>
+              <div class="text-muted mt-1" style="font-size: var(--fs-small); font-style: italic;">
+                <%= translation.meaning %>
+              </div>
+            <% end %>
+          </div>
+          <%= button_to vocabulary_path(word.id),
+                method: :delete,
+                class: "btn btn-sm",
+                style: "background: none; border: none; color: var(--meen-danger); opacity: 0.6; padding: 0.25rem 0.5rem; font-size: 1rem; flex-shrink: 0;",
+                title: "Remove",
+                data: { turbo_confirm: "Remove \"#{word.lemma}\" from your word bank?" } do %>
+            &times;
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%# Curriculum section %>
+  <h2 class="mb-3" style="font-size: var(--fs-h3); color: var(--meen-lavender);">
+    Words I know
+    <span class="badge ms-2" style="background: var(--meen-haze); color: var(--meen-lavender); font-size: var(--fs-micro); font-family: var(--font-base); font-weight: 500; vertical-align: middle;">
+      <%= @curriculum.size %>
+    </span>
+  </h2>
+
+  <% if @curriculum.any? %>
+    <div class="card" style="border-radius: var(--radius-md); overflow: hidden;">
+      <% @curriculum.each_with_index do |vocab, i| %>
+        <% word = vocab.word %>
+        <% translation = word.word_translations.find { |t| t.language_id == current_user.base_language_id } %>
+        <div class="d-flex align-items-center gap-3 px-4 py-3 <%= i < @curriculum.size - 1 ? 'border-bottom' : '' %>"
+             style="border-color: var(--meen-border) !important;">
+          <div class="flex-grow-1">
+            <span style="font-family: var(--font-display); font-size: var(--fs-h3); font-weight: 700;">
+              <%= [word.article, word.lemma].compact.join(" ") %>
+            </span>
+            <% if word.level.present? %>
+              <span class="badge ms-2" style="background: var(--meen-teal-light); color: var(--meen-teal); font-size: var(--fs-micro); font-family: var(--font-base); font-weight: 500;">
+                <%= word.level %>
+              </span>
+            <% end %>
+            <% if translation&.meaning.present? %>
+              <div class="text-muted mt-1" style="font-size: var(--fs-small); font-style: italic;">
+                <%= translation.meaning %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-muted" style="font-size: var(--fs-small);">
+      No curriculum words yet — complete a daily session to get started.
+    </p>
+  <% end %>
+
+</div>

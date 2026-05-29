@@ -1,0 +1,15 @@
+<% is_greta = role == "assistant" %>
+<div class="d-flex <%= is_greta ? 'align-items-start' : 'align-items-end flex-row-reverse' %> gap-3 mb-3">
+
+  <% if is_greta %>
+    <div class="greta-avatar">🦊</div>
+    <div class="chat-bubble chat-bubble-greta">
+      <%= format_greta(content) %>
+    </div>
+  <% else %>
+    <div class="chat-bubble chat-bubble-user">
+      <p class="mb-0"><%= html_escape(content) %></p>
+    </div>
+  <% end %>
+
+</div>

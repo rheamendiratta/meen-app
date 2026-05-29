@@ -1,6 +1,6 @@
-// Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
 import "@hotwired/turbo-rails"
 import "controllers"
+import "bootstrap"
 
-// Change to true to enable Turbo Drive
+// Turbo Drive off until we have page-transition design settled
 Turbo.session.drive = false

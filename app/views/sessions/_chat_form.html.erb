@@ -1,0 +1,13 @@
+<%= form_with url: speaking_exchange_session_path, method: :post do |f| %>
+  <div class="d-flex gap-2">
+    <%= f.text_area :message,
+          rows: 2,
+          placeholder: "Type your German here…",
+          class: "form-control",
+          style: "border-radius:var(--radius-md); resize:none;",
+          autofocus: true %>
+    <%= f.button "Send →",
+          class: "btn text-white fw-semibold px-4",
+          style: "background:var(--meen-lavender); border-radius:var(--radius-md); white-space:nowrap;" %>
+  </div>
+<% end %>

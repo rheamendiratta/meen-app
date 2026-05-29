@@ -1,0 +1,103 @@
+<% content_for :title, "Listening — Meen" %>
+
+<div class="container py-5" style="max-width:650px;">
+
+  <div class="mb-4">
+    <%= render "sessions/progress", step: 4 %>
+  </div>
+
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <div style="font-size:2rem; line-height:1;">🎧</div>
+    <div>
+      <h1 class="h5 fw-bold mb-0">Listening comprehension</h1>
+      <p class="text-muted mb-0" style="font-size:var(--fs-small);">Listen to the dialogue, then answer all three questions.</p>
+    </div>
+  </div>
+
+  <% if @result %>
+    <%# ── Result state ── %>
+    <div class="card border-0 p-4 mb-4 text-center"
+         style="border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);
+                background:<%= @result['score'] == @result['total'] ? 'var(--meen-success-light)' : 'var(--meen-lavender-light)' %>;">
+      <p class="fw-bold mb-1" style="font-size:1.4rem;">
+        <%= @result["score"] %> / <%= @result["total"] %> correct
+        <%= @result["score"] == @result["total"] ? " 🎉" : "" %>
+      </p>
+    </div>
+
+    <div class="d-flex flex-column gap-3 mb-4">
+      <% @exercise["questions"].each_with_index do |q, i| %>
+        <% r = @result["results"][i] %>
+        <div class="card border-0 p-3" style="border-radius:var(--radius-md); box-shadow:var(--shadow-sm);">
+          <p class="fw-semibold mb-2" style="font-size:var(--fs-small); color:var(--meen-ink-muted);">Q<%= i+1 %></p>
+          <p class="fw-semibold mb-2"><%= q["question"] %></p>
+          <% q["options"].each_with_index do |opt, oi| %>
+            <% is_correct = oi == r["correct"] %>
+            <% is_selected = oi == r["selected"] %>
+            <div class="d-flex align-items-center gap-2 px-3 py-2 mb-1 rounded"
+                 style="background:<%= is_correct ? 'var(--meen-success-light)' : (is_selected && !is_correct ? 'var(--meen-error-light)' : 'transparent') %>;
+                        border:1px solid <%= is_correct ? 'var(--meen-success)' : (is_selected && !is_correct ? 'var(--meen-danger)' : 'var(--meen-border)') %>;">
+              <span><%= is_correct ? '✅' : (is_selected && !is_correct ? '❌' : '◦') %></span>
+              <span style="font-size:var(--fs-small);"><%= opt %></span>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="card border-0 p-4 mb-4" style="border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+      <p class="fw-semibold mb-3" style="color:var(--meen-periwinkle);">Transcript</p>
+      <% @exercise["transcript"].split("\n").each do |line| %>
+        <% next if line.strip.empty? %>
+        <p class="mb-1" style="font-size:var(--fs-small);"><%= line %></p>
+      <% end %>
+    </div>
+
+    <%= link_to "Continue to Reading →", reading_session_path,
+          class: "btn fw-semibold px-5 py-2 d-block text-center",
+          style: "background:var(--meen-lavender); color:var(--meen-bg); border-radius:var(--radius-pill);" %>
+
+  <% else %>
+    <%# ── Exercise state ── %>
+    <div data-controller="speech"
+         data-speech-text-value="<%= j(@exercise['transcript']) %>"
+         data-speech-dialogue-value="true"
+         class="card border-0 p-4 mb-4 text-center"
+         style="border-radius:var(--radius-lg); box-shadow:var(--shadow-md);">
+      <p class="text-muted mb-3" style="font-size:var(--fs-small);">Tap to hear the dialogue — Klaus and Maria will take turns.</p>
+      <button data-action="click->speech#speak"
+              data-speech-target="button"
+              class="btn mx-auto d-flex align-items-center gap-2 fw-semibold"
+              style="background:var(--meen-teal); color:var(--meen-bg); border-radius:var(--radius-pill); padding:0.6rem 1.5rem;">
+        <span style="font-size:1.3rem;">🔊</span>
+        <span>Listen</span>
+      </button>
+      <p class="text-muted mt-2 mb-0" style="font-size:var(--fs-small);">You can listen as many times as you need.</p>
+    </div>
+
+    <%= form_with url: listening_session_path, method: :post do |f| %>
+      <div class="d-flex flex-column gap-3 mb-4">
+        <% @exercise["questions"].each_with_index do |q, i| %>
+          <div class="card border-0 p-4" style="border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+            <p class="fw-semibold mb-3">
+              <span class="badge me-2" style="background:var(--meen-lavender-light); color:var(--meen-lavender); font-size:0.7rem;">Q<%= i+1 %></span>
+              <%= q["question"] %>
+            </p>
+            <div class="d-flex flex-column gap-2">
+              <% q["options"].each_with_index do |option, oi| %>
+                <label class="mcq-option d-flex align-items-center gap-2 p-3">
+                  <%= radio_button_tag "option[#{i}]", oi, false, required: true, class: "form-check-input mt-0 flex-shrink-0" %>
+                  <span style="font-size:var(--fs-small);"><%= option %></span>
+                </label>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <%= f.button "Submit all answers →",
+            class: "btn fw-semibold px-5 py-2 w-100",
+            style: "background:var(--meen-lavender); color:var(--meen-bg); border-radius:var(--radius-pill);" %>
+    <% end %>
+  <% end %>
+
+</div>

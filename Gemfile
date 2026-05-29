@@ -17,7 +17,11 @@ gem "tzinfo-data", platforms: %i[windows jruby] # Timezone data for Windows/JRub
 gem "active_link_to"                  # Highlight current page links
 gem "dotenv"                          # Load environment variables from .env
 gem "http"                            # Simple HTTP client for APIs
+gem "fsrs_ruby"                       # FSRS v6.0 spaced-repetition scheduler
 gem "rollbar"                         # Error tracking in production
+gem "devise"                          # Authentication
+gem "dartsass-rails"                  # Sass/SCSS compilation for Bootstrap overrides
+gem "bootstrap", "~> 5.3"            # CSS framework
 gem "cgi" # Required for Ruby 4.0+ (removed from stdlib)
 gem "tsort" # Required for Ruby 4.0+ (moving out of default gems)
 
@@ -47,6 +51,7 @@ end
 
 group :test do
   gem "capybara"                      # Browser testing
+  gem "factory_bot_rails"             # Test data factories
   gem "rails-controller-testing"      # Controller test helpers
   gem "rspec-html-matchers"           # HTML matchers for tests
   gem "selenium-webdriver", "~> 4.41" # Browser automation

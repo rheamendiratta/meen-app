@@ -1,0 +1,84 @@
+<% content_for :title, "Dashboard — Meen" %>
+
+<div class="container py-5">
+  <div class="row g-4">
+
+    <%# ── Companion greeting card ───────────────────────────────────────────── %>
+    <div class="col-12">
+      <div class="card border-0 p-4 d-flex flex-row align-items-center gap-4"
+           style="border-radius:var(--radius-lg); box-shadow:var(--shadow-md); background:var(--meen-white);">
+        <div style="font-size:3.5rem; line-height:1;">
+          <%= @language.code == "de" ? "🦊" : "🐱" %>
+        </div>
+        <div>
+          <p class="mb-1 fw-semibold" style="color:var(--meen-periwinkle);">
+            <%= @companion&.name || (@language.code == "de" ? "Greta" : "Fabien") %> says:
+          </p>
+          <p class="mb-0" style="color:var(--meen-ink);">
+            <% if @language.code == "de" %>
+              Hallo! Bereit für heute? 🌟
+            <% else %>
+              Bonjour! On commence? 🌟
+            <% end %>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <%# ── Stats row ─────────────────────────────────────────────────────────── %>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 text-center p-4" style="border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); background:var(--meen-white);">
+        <div style="font-size:var(--fs-display); font-weight:700; color:var(--meen-periwinkle); line-height:1;">
+          <%= current_user.current_streak %>
+        </div>
+        <div class="text-muted mt-1" style="font-size:var(--fs-small);">day streak 🔥</div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <div class="card border-0 text-center p-4" style="border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); background:var(--meen-white);">
+        <div style="font-size:var(--fs-display); font-weight:700; color:var(--meen-teal); line-height:1;">
+          <%= @words_known %>
+        </div>
+        <div class="text-muted mt-1" style="font-size:var(--fs-small);">words learned</div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <div class="card border-0 text-center p-4" style="border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); background:var(--meen-white);">
+        <div style="font-size:var(--fs-display); font-weight:700; color:var(--meen-lavender); line-height:1;">
+          <%= @user_language&.longest_streak || 0 %>
+        </div>
+        <div class="text-muted mt-1" style="font-size:var(--fs-small);">best streak</div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <div class="card border-0 text-center p-4" style="border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); background:var(--meen-white);">
+        <div style="font-size:var(--fs-display); font-weight:700; color:var(--meen-success); line-height:1;">
+          <%= @language.code.upcase %>
+        </div>
+        <div class="text-muted mt-1" style="font-size:var(--fs-small);"><%= @language.name %></div>
+      </div>
+    </div>
+
+    <%# ── Start session CTA ──────────────────────────────────────────────────── %>
+    <div class="col-12">
+      <div class="card border-0 p-5 text-center" style="border-radius:var(--radius-lg); box-shadow:var(--shadow-md); background:var(--meen-white);">
+        <% if @today.module_completed? %>
+          <div style="font-size:2.5rem;">🎉</div>
+          <h2 class="h4 fw-bold mt-3 mb-2" style="color:var(--meen-periwinkle);">You're done for today!</h2>
+          <p class="text-muted mb-0">Come back tomorrow to keep your streak going.</p>
+        <% else %>
+          <div style="font-size:2.5rem;">📖</div>
+          <h2 class="h4 fw-bold mt-3 mb-2" style="color:var(--meen-periwinkle);">Ready for today's session?</h2>
+          <p class="text-muted mb-3">5 new words + practice exercises — about 10 minutes.</p>
+          <%= link_to "Start today's session →", introduce_session_path,
+                class: "btn text-white fw-semibold px-5 py-2",
+                style: "background:var(--meen-lavender); border-radius:var(--radius-pill);" %>
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<% content_for :title, "Grammar — Meen" %>
+
+<div class="container py-5" style="max-width: 760px;">
+
+  <div class="mb-4">
+    <h1 class="mb-1" style="font-size: var(--fs-h1);">Grammar</h1>
+    <p class="text-muted mb-0" style="font-size: var(--fs-small);">
+      <%= @language&.name %> reference
+    </p>
+  </div>
+
+  <% if @categories.any? %>
+    <% @categories.each do |category, entries| %>
+      <div class="mb-5">
+        <h2 class="mb-3" style="font-size: var(--fs-h3); color: var(--meen-lavender);">
+          <%= category.titleize %>
+        </h2>
+        <div class="d-flex flex-column gap-3">
+          <% entries.each do |entry| %>
+            <div class="card p-4" style="border-radius: var(--radius-md);">
+              <h3 class="mb-2" style="font-size: var(--fs-body); font-weight: 600;">
+                <%= entry.title %>
+              </h3>
+              <div style="font-size: var(--fs-small); color: var(--meen-ink-muted); white-space: pre-wrap; line-height: 1.7;">
+                <%= entry.content %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="card p-5 text-center" style="border-radius: var(--radius-md);">
+      <p class="text-muted mb-0" style="font-size: var(--fs-small);">
+        Grammar reference content coming soon.
+      </p>
+    </div>
+  <% end %>
+
+</div>

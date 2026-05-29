@@ -1,0 +1,101 @@
+<% content_for :title, "Add a Word — Meen" %>
+
+<div class="container py-5" style="max-width: 540px;">
+  <div class="mb-4">
+    <%= link_to "&larr; Word Bank".html_safe, vocabulary_index_path,
+          style: "font-size: var(--fs-small); color: var(--meen-ink-muted); text-decoration: none;" %>
+  </div>
+
+  <h1 class="mb-1" style="font-size: var(--fs-h1);">Add a word</h1>
+  <p class="text-muted mb-4" style="font-size: var(--fs-small);">
+    Words you add here join your <%= @language&.name %> word bank and will appear in AI exercises.
+  </p>
+
+  <div class="card p-4" style="border-radius: var(--radius-md);">
+    <%= form_with url: vocabulary_index_path, method: :post do |f| %>
+
+      <%# Word type %>
+      <div class="mb-4">
+        <label class="form-label fw-medium">Type</label>
+        <div class="d-flex gap-2">
+          <% [["word", "Word"], ["phrase", "Phrase"]].each do |value, label| %>
+            <div class="form-check form-check-inline">
+              <%= radio_button_tag "word[word_type]", value,
+                    value == "word",
+                    class: "form-check-input",
+                    id: "word_type_#{value}" %>
+              <label class="form-check-label" for="word_type_<%= value %>"><%= label %></label>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <%# Article + lemma row %>
+      <div class="row g-2 mb-3">
+        <div class="col-auto" style="min-width: 110px;">
+          <label class="form-label fw-medium">Article</label>
+          <%= select_tag "word[article]",
+                options_for_select([["— none —", ""], ["der", "der"], ["die", "die"], ["das", "das"]]),
+                class: "form-select",
+                style: "background: #252340; color: var(--meen-ink); border-color: var(--meen-border);" %>
+          <div class="form-text" style="font-size: var(--fs-micro); color: var(--meen-mist);">
+            German nouns only
+          </div>
+        </div>
+        <div class="col">
+          <label class="form-label fw-medium">Word / phrase <span style="color: var(--meen-danger);">*</span></label>
+          <%= text_field_tag "word[lemma]",
+                params.dig(:word, :lemma),
+                class: "form-control #{"is-invalid" if @word&.errors[:lemma].any?}",
+                placeholder: "e.g. Hund, gehen, schnell",
+                autofocus: true %>
+          <% if @word&.errors[:lemma].any? %>
+            <div class="invalid-feedback"><%= @word.errors[:lemma].first %></div>
+          <% end %>
+        </div>
+      </div>
+
+      <%# Part of speech %>
+      <div class="mb-3">
+        <label class="form-label fw-medium">Part of speech</label>
+        <%= select_tag "word[part_of_speech]",
+              options_for_select(
+                [["— select —", ""], "noun", "verb", "adjective", "adverb",
+                 "pronoun", "preposition", "conjunction", "interjection", "phrase"],
+                params.dig(:word, :part_of_speech)
+              ),
+              class: "form-select",
+              style: "background: #252340; color: var(--meen-ink); border-color: var(--meen-border);" %>
+      </div>
+
+      <%# Meaning %>
+      <div class="mb-3">
+        <label class="form-label fw-medium">
+          Meaning in <%= current_user.base_language&.name || "English" %>
+          <span style="color: var(--meen-danger);">*</span>
+        </label>
+        <%= text_field_tag :meaning,
+              params[:meaning],
+              class: "form-control",
+              placeholder: "e.g. dog, to go, fast" %>
+      </div>
+
+      <%# Notes (optional) %>
+      <div class="mb-4">
+        <label class="form-label fw-medium">Notes <span class="text-muted fw-normal">(optional)</span></label>
+        <%= text_area_tag :notes,
+              params[:notes],
+              class: "form-control",
+              rows: 2,
+              placeholder: "e.g. irregular verb, only used in formal contexts…" %>
+      </div>
+
+      <div class="d-flex gap-3 align-items-center">
+        <%= f.submit "Add to word bank", class: "btn btn-meen px-4" %>
+        <%= link_to "Cancel", vocabulary_index_path,
+              style: "font-size: var(--fs-small); color: var(--meen-ink-muted); text-decoration: none;" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

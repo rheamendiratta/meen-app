@@ -1,0 +1,78 @@
+{
+  "settings": {
+    "screenshots_enabled": true
+  },
+  "rules": [
+    {
+      "comment": "Catch-all: push navigation, no pull-to-refresh by default",
+      "patterns": [".*"],
+      "properties": {
+        "presentation": "default",
+        "pull_to_refresh_enabled": false
+      }
+    },
+
+    {
+      "comment": "Tab roots: replace so tapping the same tab doesn't stack a new controller",
+      "patterns": [
+        "^/dashboard$",
+        "^/grammar_references$",
+        "^/vocabulary$",
+        "^/settings$"
+      ],
+      "properties": {
+        "presentation": "replace",
+        "pull_to_refresh_enabled": true
+      }
+    },
+
+    {
+      "comment": "Auth screens: replaceRoot removes the tab bar entirely (no native chrome)",
+      "patterns": [
+        "^/users/sign_in$",
+        "^/users/sign_up$",
+        "^/users/password",
+        "^/onboarding$"
+      ],
+      "properties": {
+        "presentation": "replaceRoot",
+        "pull_to_refresh_enabled": false
+      }
+    },
+
+    {
+      "comment": "Daily session flow: explicit push for each step",
+      "patterns": [
+        "^/session/introduce$",
+        "^/session/flashcards$",
+        "^/session/speaking$",
+        "^/session/listening$",
+        "^/session/reading$"
+      ],
+      "properties": {
+        "presentation": "default",
+        "pull_to_refresh_enabled": false
+      }
+    },
+
+    {
+      "comment": "Session complete: replace so back-button can't replay the last exercise",
+      "patterns": ["^/session/complete$"],
+      "properties": {
+        "presentation": "replace",
+        "pull_to_refresh_enabled": false
+      }
+    },
+
+    {
+      "comment": "AJAX-only POST endpoints — native should never navigate to these",
+      "patterns": [
+        "^/session/speaking_exchange$",
+        "^/session/speaking_complete$"
+      ],
+      "properties": {
+        "presentation": "none"
+      }
+    }
+  ]
+}

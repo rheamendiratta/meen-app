@@ -1,13 +1,14 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-require "spec_helper"
-ENV["RAILS_ENV"] ||= "test"
-require_relative "../config/environment"
-require "capybara/rails"
-require "capybara/rspec"
+require 'spec_helper'
+ENV['RAILS_ENV'] ||= 'test'
+require_relative '../config/environment'
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
-require "rspec/rails"
-require "support/headless_chrome"
+# Uncomment the line below in case you have `--require rails_helper` in the `.rspec` file
+# that will avoid rails generators crashing because migrations haven't been run yet
+# return unless Rails.env.test?
+require 'rspec/rails'
+require 'factory_bot_rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -23,37 +24,31 @@ require "support/headless_chrome"
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-# Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
+Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
 
-# Checks for pending migrations and applies them before tests are run.
+# Ensures that the test database schema matches the current schema file.
+# If there are pending migrations it will invoke `db:test:prepare` to
+# recreate the test database by loading the schema.
 # If you are not using ActiveRecord, you can remove these lines.
 begin
   ActiveRecord::Migration.maintain_test_schema!
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
+Shoulda::Matchers.configure do |config|
+  config.integrate { |with|
+    with.test_framework :rspec
+    with.library :rails
+  }
+end
 
 RSpec.configure do |config|
-  # Suppress RSpec warnings about potential false positives
-  RSpec::Expectations.configuration.on_potential_false_positives = :nothing
-
-  # Devise sign in helpers
-  if defined?(Devise::Test::ControllerHelpers)
-    config.include Devise::Test::ControllerHelpers, type: :controller
-    config.include Devise::Test::ControllerHelpers, type: :view
-  end
-
-  # Rails 8 issue: https://github.com/heartcombo/devise/issues/5705
-  config.before(:each, type: :controller) do
-    Rails.application.reload_routes_unless_loaded
-  end
-
-  # Shoulda matchers for association accessor specs
-  config.include(Shoulda::Matchers::ActiveRecord, type: :model)
-  config.include(Shoulda::Matchers::ActiveModel, type: :model)
+  config.include FactoryBot::Syntax::Methods
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_paths = [ "#{::Rails.root}/spec/fixtures" ]
+  config.fixture_paths = [
+    Rails.root.join('spec/fixtures')
+  ]
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
@@ -63,20 +58,22 @@ RSpec.configure do |config|
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 
-  # RSpec Rails can automatically mix in different behaviours to your tests
-  # based on their file location, for example enabling you to call `get` and
-  # `post` in specs under `spec/controllers`.
+  # RSpec Rails uses metadata to mix in different behaviours to your tests,
+  # for example enabling you to call `get` and `post` in request specs. e.g.:
   #
-  # You can disable this behaviour by removing the line below, and instead
-  # explicitly tag your specs with their type, e.g.:
-  #
-  #     RSpec.describe UsersController, type: :controller do
+  #     RSpec.describe UsersController, type: :request do
   #       # ...
   #     end
   #
   # The different available types are documented in the features, such as in
-  # https://relishapp.com/rspec/rspec-rails/docs
-  config.infer_spec_type_from_file_location!
+  # https://rspec.info/features/8-0/rspec-rails
+  #
+  # You can also infer these behaviours automatically by location, e.g.
+  # /spec/models would pull in the same behaviour as `type: :model` but this
+  # behaviour is considered legacy and will be removed in a future version.
+  #
+  # To enable this behaviour uncomment the line below.
+  # config.infer_spec_type_from_file_location!
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!

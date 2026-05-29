@@ -1,0 +1,54 @@
+// Bootstrap SCSS variable overrides — must be imported BEFORE bootstrap.
+// Dark-themed Meen palette.
+
+// Brand (brighter for dark backgrounds)
+$primary:   #C4AFDD;
+$secondary: #90C4DE;
+$info:      #7DBDE0;
+$success:   #6BBEA5;
+$warning:   #E8BF78;
+$danger:    #D98AA5;
+$light:     #2E2C4A;
+$dark:      #EAE8F5;
+
+// Body
+$body-bg:    #12111F;
+$body-color: #EAE8F5;
+
+// Cards
+$card-bg:            #1E1C30;
+$card-color:         #EAE8F5;
+$card-border-color:  #3D3A5C;
+$card-cap-bg:        #252340;
+
+// Inputs
+$input-bg:                  #252340;
+$input-color:               #EAE8F5;
+$input-border-color:        #3D3A5C;
+$input-focus-bg:            #2E2C4A;
+$input-focus-color:         #EAE8F5;
+$input-focus-border-color:  #C4AFDD;
+$input-placeholder-color:   #7A7899;
+
+// Borders & misc
+$border-color:              #3D3A5C;
+$progress-bg:               #2E2C4A;
+
+// Navbar
+$navbar-light-color:        rgba(234, 232, 245, 0.85);
+$navbar-light-hover-color:  #EAE8F5;
+$navbar-light-active-color: #EAE8F5;
+$navbar-light-toggler-border-color: #3D3A5C;
+
+// Typography
+$font-family-sans-serif: 'Inter', system-ui, -apple-system, sans-serif;
+
+// Radius
+$border-radius:    14px;
+$border-radius-sm: 8px;
+$border-radius-lg: 22px;
+
+// Shadows (deeper on dark)
+$box-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.4);
+$box-shadow:    0 4px 20px rgba(0, 0, 0, 0.5);
+$box-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
