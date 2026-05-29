@@ -22,9 +22,10 @@ namespace :db do
       # extra_forms:  array of { form_text:, morphology: } hashes for additional forms.
       seed_word = lambda do |language:, theme:, rank:, lemma:, word_type:, part_of_speech:,
                               translation:, notes: nil, primary_form: nil, extra_forms: []|
-        word = Word.find_or_create_by!(language: language, lemma: lemma, frequency_rank: rank) do |w|
+        word = Word.find_or_create_by!(language: language, lemma: lemma, owner_user_id: nil) do |w|
           w.word_type      = word_type
           w.part_of_speech = part_of_speech
+          w.frequency_rank = rank
           w.level          = "A1"
           w.theme          = theme
         end
@@ -60,14 +61,13 @@ namespace :db do
         { rank: 6,  lemma: "nein",            word_type: "word",   part_of_speech: "adverb",       translation: "no" },
         { rank: 7,  lemma: "Entschuldigung",  word_type: "phrase", part_of_speech: "interjection", translation: "Excuse me" },
         { rank: 8,  lemma: "Es tut mir leid", word_type: "phrase", part_of_speech: "phrase",       translation: "I'm sorry" },
-        # Group 2 — Pronouns (caveat 1: du/Sie on separate rows; sie plural = row 15)
+        # Group 2 — Pronouns
         { rank: 9,  lemma: "ich", word_type: "word", part_of_speech: "pronoun", translation: "I" },
         { rank: 10, lemma: "du",  word_type: "word", part_of_speech: "pronoun", translation: "you (informal)" },
         { rank: 11, lemma: "Sie", word_type: "word", part_of_speech: "pronoun", translation: "you (formal)" },
         { rank: 12, lemma: "er",  word_type: "word", part_of_speech: "pronoun", translation: "he" },
-        { rank: 13, lemma: "sie", word_type: "word", part_of_speech: "pronoun", translation: "she",  notes: "feminine singular" },
+        { rank: 13, lemma: "sie", word_type: "word", part_of_speech: "pronoun", translation: "she / they", notes: "she (singular) or they (plural) depending on context" },
         { rank: 14, lemma: "wir", word_type: "word", part_of_speech: "pronoun", translation: "we" },
-        { rank: 15, lemma: "sie", word_type: "word", part_of_speech: "pronoun", translation: "they", notes: "plural" },
         # Group 3 — Core verbs (caveat 3: gehen at 18, werden at 23)
         { rank: 16, lemma: "sein",   word_type: "word", part_of_speech: "verb", translation: "to be" },
         { rank: 17, lemma: "haben",  word_type: "word", part_of_speech: "verb", translation: "to have" },
@@ -226,12 +226,13 @@ namespace :db do
         db_rank = row["rank"].to_i + RANK_OFFSET
         theme   = row["theme"].presence ? find_de_theme.call(row["theme"]) : nil
 
-        word = Word.find_or_create_by!(language: german, lemma: lemma, frequency_rank: db_rank) do |w|
+        word = Word.find_or_create_by!(language: german, lemma: lemma, owner_user_id: nil) do |w|
           w.word_type      = "word"
           w.part_of_speech = pos_map.fetch(row["pos"], row["pos"].to_s.downcase)
           w.article        = row["article"].presence
           w.gender         = row["gender"].presence
           w.level          = row["cefr"].presence
+          w.frequency_rank = db_rank
           w.theme          = theme
         end
 
